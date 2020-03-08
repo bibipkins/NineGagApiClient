@@ -14,5 +14,5 @@ Big thanks to https://github.com/Rora for decoupling api client from My9GAG
 ### Notice
 I do not own any rights to content retrieved by making requests using this API client.
 I am also not responsible for any content retrieved by this client.
-I made it just for fun, in my free time, to use in my mobile 9GAG app and help others in creating their own projects
+I made it just for fun, in my free time, to use in my mobile 9GAG app and help others in creating their own projects.
 You should definetly visit https://9gag.com/ or download official mobile 9GAG app for full experience
