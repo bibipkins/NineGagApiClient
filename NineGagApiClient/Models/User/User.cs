@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Models.User
+namespace NineGagApiClient.Models
 {
     public class User
     {

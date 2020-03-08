@@ -1,13 +1,9 @@
-﻿using Models.Post.Media;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace Models.Post
+namespace NineGagApiClient.Models
 {
-    //We call these simple so we don't conflict with the class names in the My9GAG project
-    //The reason we use the same namespace as the My9GAG project is for backward compatibility
-    //and because I can't refactor the UWP, IOS and Android projects (missing plugins)
-    public class SimplePost
+    public class Post
     {
         #region Properties
 
@@ -40,7 +36,13 @@ namespace Models.Post
         {
             get;
             set;
-        }        
+        }
+        public PostMedia PostMedia
+        {
+            get;
+            set;
+        }
+
         public PostType Type
         {
             get;
@@ -58,11 +60,6 @@ namespace Models.Post
             get;
             set;
         }
-        public ISimplePostMedia SimplePostMedia
-        {
-            get;
-            set;
-        }
 
         #endregion
 
@@ -70,7 +67,7 @@ namespace Models.Post
 
         public override string ToString()
         {
-            return $"{Id}, {Title}, URL: {Url}, MediaURL: {SimplePostMedia?.Url}, " +
+            return $"{Id}, {Title}, URL: {Url}, MediaURL: {PostMedia.Url}, " +
                 $"CommentsCount: {CommentsCount}, UpvoteCount: {UpvoteCount}, " +
                 $"DownvoteCount: {DownvoteCount}, Type: {Type.ToString()}, NSFW: {IsNsfw}, " +
                 $"Section: {Section?.Name}";

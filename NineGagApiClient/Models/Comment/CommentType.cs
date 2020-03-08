@@ -1,5 +1,5 @@
 ﻿
-namespace Models.Comment
+namespace NineGagApiClient.Models
 {
     public enum CommentType
     {

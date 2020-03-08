@@ -1,10 +1,10 @@
-﻿using Models.Authentication;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using NineGagApiClient.Models;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Logic.GoogleAuthentication
+namespace NineGagApiClient.GoogleAuthentication
 {
     public class GoogleAuthenticationService : IGoogleAuthenticationService
     {

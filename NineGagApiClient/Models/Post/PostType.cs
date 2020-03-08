@@ -1,5 +1,5 @@
 ﻿
-namespace Models.Post
+namespace NineGagApiClient.Models
 {
     public enum PostType
     {

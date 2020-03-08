@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 
-namespace Models.Comment
+namespace NineGagApiClient.Models
 {
     public class Comment
     {
@@ -19,6 +19,22 @@ namespace Models.Comment
             get;
             set;
         }
+        public long Timestamp
+        {
+            get;
+            set;
+        }
+        public User User
+        {
+            get;
+            set;
+        }
+        public CommentType Type
+        {
+            get;
+            set;
+        }
+
         [JsonProperty(PropertyName = "likeCount")]
         public int LikesCount
         {
@@ -27,21 +43,6 @@ namespace Models.Comment
         }
         [JsonProperty(PropertyName = "dislikeCount")]
         public int DislikesCount
-        {
-            get;
-            set;
-        }
-        public long Timestamp
-        {
-            get;
-            set;
-        }
-        public User.User User
-        {
-            get;
-            set;
-        }
-        public CommentType Type
         {
             get;
             set;

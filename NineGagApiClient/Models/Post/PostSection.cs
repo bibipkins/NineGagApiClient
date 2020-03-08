@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Models.Post
+namespace NineGagApiClient.Models
 {
     public class PostSection
     {

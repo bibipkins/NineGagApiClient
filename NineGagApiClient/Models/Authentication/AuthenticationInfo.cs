@@ -1,21 +1,21 @@
-﻿using Models.Authentication;
-using NineGagApiClient.Utils;
+﻿using NineGagApiClient.Utils;
 using System;
 
-namespace NineGagApiClient.Models.Authentication
+namespace NineGagApiClient.Models
 {
     public class AuthenticationInfo
     {
         #region Constructors
 
         public AuthenticationInfo()
-        {
-            Timestamp = RequestUtils.GetTimestamp();
+        {   
             Token = RequestUtils.GetSha1(Timestamp);
-            DeviceUuid = RequestUtils.GetUuid();
-            Signature = RequestUtils.GetSignature(Timestamp, AppId, DeviceUuid);
             TokenWillExpireAt = DateTime.UtcNow;
             LastAuthenticationType = AuthenticationType.None;
+
+            Timestamp = RequestUtils.GetTimestamp();
+            DeviceUuid = RequestUtils.GetUuid();
+            Signature = RequestUtils.GetSignature(Timestamp, AppId, DeviceUuid);
         }
 
         #endregion
@@ -38,6 +38,17 @@ namespace NineGagApiClient.Models.Authentication
             get;
             set;
         }
+        public DateTime TokenWillExpireAt
+        {
+            get;
+            set;
+        }
+        public AuthenticationType LastAuthenticationType
+        {
+            get;
+            set;
+        }
+
         public string Timestamp
         {
             get;
@@ -58,12 +69,6 @@ namespace NineGagApiClient.Models.Authentication
             set;
         }
 
-        public DateTime TokenWillExpireAt
-        {
-            get;
-            set;
-        }
-        public AuthenticationType LastAuthenticationType { get; set; }
         public bool HasTokenExpired
         {
             get => TokenWillExpireAt <= DateTime.UtcNow;

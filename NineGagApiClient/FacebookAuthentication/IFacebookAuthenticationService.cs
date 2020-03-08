@@ -1,5 +1,5 @@
 ﻿
-namespace Logic.FacebookAuthentication
+namespace NineGagApiClient.FacebookAuthentication
 {
     public interface IFacebookAuthenticationService
     {

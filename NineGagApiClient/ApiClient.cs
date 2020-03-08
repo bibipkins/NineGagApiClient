@@ -1,9 +1,5 @@
-﻿using Models.Authentication;
-using Models.Comment;
-using Models.Post;
-using Models.Post.Media;
-using Newtonsoft.Json.Linq;
-using NineGagApiClient.Models.Authentication;
+﻿using Newtonsoft.Json.Linq;
+using NineGagApiClient.Models;
 using NineGagApiClient.Utils;
 using System;
 using System.Collections.Generic;
@@ -15,29 +11,18 @@ namespace NineGagApiClient
 {
     public class ApiClient : IApiClient, IDisposable
     {
-        #region Fields
-
-        private readonly NineGagOptions _nineGagOptions;
-        private readonly HttpClient _httpClient;
-        private readonly bool _disposeHttpClient;
-
-        #endregion
-
         #region Constructors
 
-        public ApiClient() : this(new HttpClient(), nineGagOptionsBuilder: null)
+        public ApiClient() : this(new HttpClient())
         {
             _disposeHttpClient = true;
         }
 
-        public ApiClient(HttpClient httpClient, Action<NineGagOptions> nineGagOptionsBuilder)
+        public ApiClient(HttpClient httpClient)
         {
             _disposeHttpClient = false;
-            _nineGagOptions = NineGagOptions.CreateDefaultOptions();
-            nineGagOptionsBuilder?.Invoke(_nineGagOptions);
-
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-            AuthenticationInfo = CreateAuthenticationInfo();
+            AuthenticationInfo = new AuthenticationInfo();
         }
 
         #endregion
@@ -48,15 +33,14 @@ namespace NineGagApiClient
 
         #endregion
 
-        #region Api Functionality
+        #region Api Methods
 
-        public virtual async Task<IList<SimplePost>> GetPostsAsync(PostCategory postCategory, int count, string olderThanPostId = "")
+        public virtual async Task<IList<Post>> GetPostsAsync(PostCategory postCategory, int count, string olderThanPostId = "")
         {
-            string type = postCategory.ToString().ToLower();
             var args = new Dictionary<string, string>()
             {
                 { "group", "1" },
-                { "type", type },
+                { "type", postCategory.ToString().ToLower() },
                 { "itemCount", count.ToString() },
                 { "entryTypes", "animated,photo,video" },
                 { "offset", "10" }
@@ -67,8 +51,8 @@ namespace NineGagApiClient
                 args["olderThan"] = olderThanPostId;
             }
 
-            var posts = new List<SimplePost>();
-            var request = FormRequest(_nineGagOptions.ApiUrl, RequestUtils.POSTS_PATH, args);
+            var posts = new List<Post>();
+            var request = FormRequest(NineGagUtils.ApiUrl, RequestUtils.POSTS_PATH, args);
             await ExecuteRequestAsync(request, responseText =>
             {
                 var jsonData = JObject.Parse(responseText);
@@ -93,7 +77,7 @@ namespace NineGagApiClient
                 "&pretty=0";
 
             var comments = new List<Comment>();
-            var request = FormRequest(_nineGagOptions.CommentCdnUrl, path, new Dictionary<string, string>());
+            var request = FormRequest(NineGagUtils.CommentCdnUrl, path, new Dictionary<string, string>());
             await ExecuteRequestAsync(request, responseText =>
             {
                 var jsonData = JObject.Parse(responseText);
@@ -110,22 +94,6 @@ namespace NineGagApiClient
             });
 
             return comments;
-        }
-
-        protected virtual SimplePost CreatePost(JToken item)
-        {
-            var post = item.ToObject<SimplePost>();
-            post.SimplePostMedia = SimplePostMediaFactory.CreatePostMedia(post.Type, item);
-            return post;
-        }
-        protected virtual string GetUrlFromJsonComment(JToken token)
-        {
-            var urlToken =
-                token.SelectToken("media.[0].imageMetaByType.animated.url") ??
-                token.SelectToken("media.[0].imageMetaByType.image.url") ??
-                string.Empty;
-
-            return urlToken.ToString();
         }
 
         #endregion
@@ -176,13 +144,9 @@ namespace NineGagApiClient
             AuthenticationInfo.ClearToken();
         }
 
-        protected virtual AuthenticationInfo CreateAuthenticationInfo()
-        {
-            return new AuthenticationInfo();
-        }
         protected async Task LoginAsync(Dictionary<string, string> args, AuthenticationType authenticationType)
         {
-            var request = FormRequest(_nineGagOptions.ApiUrl, RequestUtils.LOGIN_PATH, args);
+            var request = FormRequest(NineGagUtils.ApiUrl, RequestUtils.LOGIN_PATH, args);
             await ExecuteRequestAsync(request, responseText =>
             {
                 var jsonData = JObject.Parse(responseText);
@@ -210,16 +174,6 @@ namespace NineGagApiClient
             }
         }
 
-        protected virtual async Task ExecuteRequestAsync(HttpRequestMessage request, Action<string> onSuccess = null)
-        {
-            using (var response = await _httpClient.SendAsync(request))
-            {
-                var responseText = await response.Content.ReadAsStringAsync();
-                ValidateResponse(responseText);
-
-                onSuccess?.Invoke(responseText);
-            }
-        }
         protected virtual HttpRequestMessage FormRequest(string api, string path, Dictionary<string, string> args)
         {
             var timestamp = RequestUtils.GetTimestamp();
@@ -227,7 +181,6 @@ namespace NineGagApiClient
             var headers = new Dictionary<string, string>()
             {
                 { "User-Agent", ".NET" },
-                //{ "Content-Type", "application/json" },
                 { "Accept", " */*" },
                 { "9GAG-9GAG_TOKEN", AuthenticationInfo.Token },
                 { "9GAG-TIMESTAMP", timestamp },
@@ -264,7 +217,16 @@ namespace NineGagApiClient
 
             return request;
         }
-        protected virtual void ValidateResponse(string response)
+        protected virtual async Task ExecuteRequestAsync(HttpRequestMessage request, Action<string> onSuccess = null)
+        {
+            using (var response = await _httpClient.SendAsync(request))
+            {
+                var responseText = await response.Content.ReadAsStringAsync();
+                ValidateRequestResponse(responseText);
+                onSuccess?.Invoke(responseText);
+            }
+        }
+        protected virtual void ValidateRequestResponse(string response)
         {
             var jsonData = JObject.Parse(response);
 
@@ -280,10 +242,44 @@ namespace NineGagApiClient
                 if (jsonData["status"].ToString() == "ERROR")
                 {
                     throw new InvalidOperationException($"Request failed: {jsonData["error"].ToString()}");
-
                 }
             }
         }
+
+        protected virtual Post CreatePost(JToken item)
+        {
+            var post = item.ToObject<Post>();
+            post.PostMedia = CreatePostMedia(post.Type, item);
+            return post;
+        }
+        protected virtual PostMedia CreatePostMedia(PostType type, JToken jsonObject)
+        {
+            switch (type)
+            {
+                case PostType.Photo:
+                    return jsonObject["images"]["image700"].ToObject<PostMedia>();
+                case PostType.Animated:
+                    return jsonObject["images"]["image460sv"].ToObject<PostMedia>();
+                default:
+                    throw new InvalidOperationException("Could not convert this post to any of existing media views");
+            }
+        }
+        protected virtual string GetUrlFromJsonComment(JToken token)
+        {
+            var urlToken =
+                token.SelectToken("media.[0].imageMetaByType.animated.url") ??
+                token.SelectToken("media.[0].imageMetaByType.image.url") ??
+                string.Empty;
+
+            return urlToken.ToString();
+        }
+
+        #endregion
+
+        #region Fields
+
+        private readonly HttpClient _httpClient;
+        private readonly bool _disposeHttpClient;
 
         #endregion
     }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NineGagApiClient;
+using NineGagApiClient.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace IntegrationTest.My9GAG.NineGagApiClient
             await apiClient.LoginWithCredentialsAsync(Settings.UserName, Settings.UserPassword);
 
             //Act
-            var posts = await apiClient.GetPostsAsync(Models.Post.PostCategory.Hot, 10);
+            var posts = await apiClient.GetPostsAsync(PostCategory.Hot, 10);
 
             //Assert
             Assert.IsNotNull(posts);
@@ -28,12 +29,12 @@ namespace IntegrationTest.My9GAG.NineGagApiClient
         {
             using var apiClient = new ApiClient();
             await apiClient.LoginWithCredentialsAsync(Settings.UserName, Settings.UserPassword);
-            var top10posts = await apiClient.GetPostsAsync(Models.Post.PostCategory.Hot, 10);
+            var top10posts = await apiClient.GetPostsAsync(PostCategory.Hot, 10);
             var post5 = top10posts[4];
             var post6 = top10posts[5];
 
             //Act
-            var postsSince = await apiClient.GetPostsAsync(Models.Post.PostCategory.Hot, 10, post5.Id);
+            var postsSince = await apiClient.GetPostsAsync(PostCategory.Hot, 10, post5.Id);
 
             //Assert
             Assert.IsNotNull(postsSince);

@@ -1,6 +1,6 @@
-﻿using Models.Authentication;
+﻿using NineGagApiClient.Models;
 
-namespace Logic.FacebookAuthentication
+namespace NineGagApiClient.FacebookAuthentication
 {
     public class FacebookAuthenticationService : IFacebookAuthenticationService
     {

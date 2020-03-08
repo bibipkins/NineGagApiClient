@@ -1,5 +1,5 @@
 ﻿
-namespace Models.Authentication
+namespace NineGagApiClient.Models
 {
     public enum AuthenticationType
     {
