@@ -8,7 +8,7 @@
     <PackageProjectUrl>https://github.com/bibipkins/NineGagApiClient</PackageProjectUrl>
     <RepositoryUrl>https://github.com/bibipkins/NineGagApiClient</RepositoryUrl>
     <PackageTags>9gag api client rest ninegag ninegagapi 9gagapi</PackageTags>
-    <PackageReleaseNotes>This is a clone of https://www.nuget.org/packages/My9GAG.NineGagApiClient . This package will be maintained instead of the old one. Compared to the old version It has breaking changes in form of renamed namespaces, classes and methods</PackageReleaseNotes>
+    <PackageReleaseNotes>This is a clone of https://www.nuget.org/packages/My9GAG.NineGagApiClient. From now on this package will be maintained instead of the old one. Compared to the old version It has breaking changes in form of renamed namespaces and projects as I wanted to separate this from My9GAG - my original project</PackageReleaseNotes>
     <Copyright>2020 Bibipkins, Rora</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <AssemblyVersion>1.0.5.0</AssemblyVersion>
