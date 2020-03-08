@@ -15,11 +15,15 @@ namespace NineGagApiClient
 {
     public class ApiClient : IApiClient, IDisposable
     {
+        #region Fields
+
         private readonly NineGagOptions _nineGagOptions;
         private readonly HttpClient _httpClient;
         private readonly bool _disposeHttpClient;
 
-        public AuthenticationInfo AuthenticationInfo { get; protected set; }
+        #endregion
+
+        #region Constructors
 
         public ApiClient() : this(new HttpClient(), nineGagOptionsBuilder: null)
         {
@@ -35,6 +39,14 @@ namespace NineGagApiClient
             _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
             AuthenticationInfo = CreateAuthenticationInfo();
         }
+
+        #endregion
+
+        #region Properties
+
+        public AuthenticationInfo AuthenticationInfo { get; protected set; }
+
+        #endregion
 
         #region Api Functionality
 
@@ -71,14 +83,6 @@ namespace NineGagApiClient
 
             return posts;
         }
-
-        protected virtual SimplePost CreatePost(JToken item)
-        {
-            var post = item.ToObject<SimplePost>();
-            post.SimplePostMedia = SimplePostMediaFactory.CreatePostMedia(post.Type, item);
-            return post;
-        }
-
         public virtual async Task<IList<Comment>> GetCommentsAsync(string postUrl, int count)
         {
             string path =
@@ -107,6 +111,13 @@ namespace NineGagApiClient
 
             return comments;
         }
+
+        protected virtual SimplePost CreatePost(JToken item)
+        {
+            var post = item.ToObject<SimplePost>();
+            post.SimplePostMedia = SimplePostMediaFactory.CreatePostMedia(post.Type, item);
+            return post;
+        }
         protected virtual string GetUrlFromJsonComment(JToken token)
         {
             var urlToken =
@@ -119,11 +130,7 @@ namespace NineGagApiClient
 
         #endregion
 
-        #region Auth methods
-        protected virtual AuthenticationInfo CreateAuthenticationInfo()
-        {
-            return new AuthenticationInfo();
-        }
+        #region Auth Methods
 
         public virtual async Task LoginWithCredentialsAsync(string userName, string password)
         {
@@ -140,7 +147,6 @@ namespace NineGagApiClient
             AuthenticationInfo.UserLogin = userName;
             AuthenticationInfo.UserPassword = password;
         }
-
         public virtual async Task LoginWithGoogleAsync(string token)
         {
             var args = new Dictionary<string, string>()
@@ -153,7 +159,6 @@ namespace NineGagApiClient
 
             await LoginAsync(args, AuthenticationType.Google);
         }
-
         public virtual async Task LoginWithFacebookAsync(string token)
         {
             var args = new Dictionary<string, string>()
@@ -171,6 +176,10 @@ namespace NineGagApiClient
             AuthenticationInfo.ClearToken();
         }
 
+        protected virtual AuthenticationInfo CreateAuthenticationInfo()
+        {
+            return new AuthenticationInfo();
+        }
         protected async Task LoginAsync(Dictionary<string, string> args, AuthenticationType authenticationType)
         {
             var request = FormRequest(_nineGagOptions.ApiUrl, RequestUtils.LOGIN_PATH, args);
@@ -188,9 +197,19 @@ namespace NineGagApiClient
                 string readStateParams = authData["noti"]["readStateParams"].ToString();
             });
         }
+
         #endregion
 
         #region Helpers
+
+        public virtual void Dispose()
+        {
+            if (_disposeHttpClient)
+            {
+                _httpClient.Dispose();
+            }
+        }
+
         protected virtual async Task ExecuteRequestAsync(HttpRequestMessage request, Action<string> onSuccess = null)
         {
             using (var response = await _httpClient.SendAsync(request))
@@ -245,7 +264,6 @@ namespace NineGagApiClient
 
             return request;
         }
-
         protected virtual void ValidateResponse(string response)
         {
             var jsonData = JObject.Parse(response);
@@ -267,13 +285,6 @@ namespace NineGagApiClient
             }
         }
 
-        public virtual void Dispose()
-        {
-            if (_disposeHttpClient)
-            {
-                _httpClient.Dispose();
-            }
-        }
         #endregion
     }
 }

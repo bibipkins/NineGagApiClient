@@ -4,7 +4,6 @@ namespace Models.User
 {
     public class User
     {
-
         [JsonProperty(PropertyName = "userId")]
         public string Id { get; set; }
         [JsonProperty(PropertyName = "displayName")]

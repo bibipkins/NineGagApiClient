@@ -11,10 +11,12 @@ namespace NineGagApiClient
         AuthenticationInfo AuthenticationInfo { get; }
 
         Task<IList<Comment>> GetCommentsAsync(string postUrl, int count);
-        Task<IList<SimplePost>> GetPostsAsync(PostCategory postCategory, int count, string olderThanPostId = "");
+        Task<IList<SimplePost>> GetPostsAsync(PostCategory postCategory, int count, string olderThanPostId);
+
         Task LoginWithCredentialsAsync(string userName, string password);
         Task LoginWithFacebookAsync(string token);
         Task LoginWithGoogleAsync(string token);
+
         void Logout();
     }
 }

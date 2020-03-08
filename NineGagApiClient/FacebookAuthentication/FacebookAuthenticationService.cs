@@ -22,7 +22,6 @@ namespace Logic.FacebookAuthentication
 
         #region Constants
 
-        //private const string AUTHENTICATION_PAGE_BASE_URL = "https://www.facebook.com/v3.3/dialog/oauth";
         private const string AUTHENTICATION_PAGE_BASE_URL = "https://m.facebook.com/v2.12/dialog/oauth";
         private const string REDIRECT_URL = "https://9gag.com/";
         

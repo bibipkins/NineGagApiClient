@@ -26,6 +26,5 @@ namespace Models.Post.Media
         }
 
         #endregion
-
     }
 }
