@@ -1,30 +1,40 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using IntegrationTests;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Schema;
+using Newtonsoft.Json.Schema.Generation;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntegrationTest
 {
     public abstract class TestBase
     {
-        private const string _TestCredentialsPath = "TestCredentials.txt";
-        protected string Username { get; set; }
-        protected string Password { get; set; }
+        public Settings Settings { get; private set; }
 
         [TestInitialize]
-        public async Task TestInit()
+        public void TestInit()
         {
-            if (!File.Exists(_TestCredentialsPath))
+            try
             {
-                await File.WriteAllLinesAsync(_TestCredentialsPath, new string[] { "username", "password" });
-                throw new Exception($"{_TestCredentialsPath} not found, created a dummy file please edit this. Enter test credentials in it. First line should be username, second line should be password. This file is added to the gitignore and won't be committed");
-            }
+                var settingsJson = JObject.Parse(File.ReadAllText(@"settings.json"));
+                var generator = new JSchemaGenerator();
+                var schema = generator.Generate(typeof(Settings));
 
-            var credentials = File.ReadAllLines(_TestCredentialsPath);
-            Username = credentials[0].Trim();
-            Password = credentials[1].Trim();
+                bool areSettingsValid = settingsJson.IsValid(schema, out IList<string> errors);
+                Assert.IsTrue(areSettingsValid, "\n - " + string.Join("\n - ", errors));
+
+                Settings = settingsJson.ToObject<Settings>();
+            }
+            catch (Exception e)
+            {
+                throw new AssertFailedException(
+                    "Check if the settings.json is correct and compliant with Settings.cs class!" +
+                    "\nIf you do not have credentials register at https://9gag.com/" +
+                    $"\n{e.Message}"
+                );
+            }
         }
     }
 }

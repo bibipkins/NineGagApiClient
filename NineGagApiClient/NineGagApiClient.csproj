@@ -3,17 +3,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Bibipkins, Rora</Authors>
-    <Company />
-    <Description>A C# rest client for the (unofficial) rest api of 9gag.</Description>
-    <PackageProjectUrl>https://github.com/Rora/My9GAG</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/Rora/My9GAG</RepositoryUrl>
-    <PackageTags>9gag api client rest</PackageTags>
-    <PackageReleaseNotes>First release, this is extracted from the My9GAG app, it was designed to not break My9GAG and be usuable by others as well.</PackageReleaseNotes>
+    <Company>Bibipkins (https://github.com/Rora), Rora (https://github.com/Rora)</Company>
+    <Description>Unofficial .Net rest api client for the popular entertainment website - 9GAG. It is completely free and, unlike many other clients, makes the actual api calls instead of parsing html, which makes this client fast and reliable</Description>
+    <PackageProjectUrl>https://github.com/bibipkins/NineGagApiClient</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/bibipkins/NineGagApiClient</RepositoryUrl>
+    <PackageTags>9gag api client rest ninegag ninegagapi 9gagapi</PackageTags>
+    <PackageReleaseNotes>This is a clone of https://www.nuget.org/packages/My9GAG.NineGagApiClient . This package will be maintained instead of the old one. Compared to the old version It has breaking changes in form of renamed namespaces, classes and methods</PackageReleaseNotes>
     <Copyright>2020 Bibipkins, Rora</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <AssemblyVersion>1.0.3.0</AssemblyVersion>
-    <FileVersion>1.0.3.0</FileVersion>
-    <Version>1.0.3</Version>
+    <AssemblyVersion>1.0.5.0</AssemblyVersion>
+    <FileVersion>1.0.5.0</FileVersion>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
