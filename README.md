@@ -2,6 +2,8 @@
 Unofficial .Net rest api client for the popular entertainment website - 9GAG. 
 It is completely free and, unlike many other clients, makes the actual api calls instead of parsing html, which makes this client fast and reliable
 
+You can get this client from nuget https://www.nuget.org/packages/NineGagApiClient
+
 It was a part of my original project https://github.com/bibipkins/My9GAG.
 Big thanks to https://github.com/Rora for decoupling api client from My9GAG
 
